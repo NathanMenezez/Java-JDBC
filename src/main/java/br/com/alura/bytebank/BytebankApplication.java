@@ -5,6 +5,7 @@ import br.com.alura.bytebank.domain.cliente.DadosCadastroCliente;
 import br.com.alura.bytebank.domain.conta.ContaService;
 import br.com.alura.bytebank.domain.conta.DadosAberturaConta;
 
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class BytebankApplication {
@@ -35,6 +36,10 @@ public class BytebankApplication {
                     case 6:
                         realizarDeposito();
                         break;
+                    case 8:
+                        consultarPeloId();
+                    case 9:
+                        transfererir();
                 }
             } catch (RegraDeNegocioException e) {
                 System.out.println("Erro: " +e.getMessage());
@@ -47,6 +52,31 @@ public class BytebankApplication {
         System.out.println("Finalizando a aplicação.");
     }
 
+    private static void transfererir() {
+        System.out.println("Digite o número da conta de origem:");
+        Integer numeroOrigem = teclado.nextInt();
+
+        System.out.println("Digite o valor a ser transferido:");
+        BigDecimal valor = teclado.nextBigDecimal();
+
+        System.out.println("Digite o numero da conta de destino:");
+        Integer numeroDestino = teclado.nextInt();
+
+        service.realizarTransferencia(numeroOrigem, numeroDestino, valor);
+
+        System.out.println("Transferencia realizada com sucesso!");
+
+        teclado.next();
+    }
+
+    private static void consultarPeloId() {
+        System.out.println("Digite o número da conta a ser consultada: ");
+        Integer numero = teclado.nextInt();
+        System.out.println(service.listById(numero));
+        System.out.println("Pressione qualquer tecla e de ENTER para voltar ao menu principal");
+        teclado.next();
+    }
+
     private static int exibirMenu() {
         System.out.println("""
                 BYTEBANK - ESCOLHA UMA OPÇÃO:
@@ -56,6 +86,8 @@ public class BytebankApplication {
                 4 - Consultar saldo de uma conta
                 5 - Realizar saque em uma conta
                 6 - Realizar depósito em uma conta
+                8 - Consultar Pelo Numero uma Conta
+                9 - Transferencia de saldo
                 7 - Sair
                 """);
         return teclado.nextInt();
@@ -94,7 +126,7 @@ public class BytebankApplication {
         System.out.println("Digite o número da conta:");
         var numeroDaConta = teclado.nextInt();
 
-        service.encerrar(numeroDaConta);
+        service.encerrarLogico(numeroDaConta);
 
         System.out.println("Conta encerrada com sucesso!");
         System.out.println("Pressione qualquer tecla e de ENTER para voltar ao menu principal");

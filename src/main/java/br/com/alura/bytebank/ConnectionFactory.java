@@ -4,14 +4,26 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 public class ConnectionFactory {
 
     public Connection recoveryConnection(){ //efetuar a criação da classe de conexão
         try {
-            return DriverManager
-                    .getConnection("jdbc:mysql://localhost:3306/jdbc_db?user=root");
+            return createDataSource().getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private HikariDataSource createDataSource() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:mysql://localhost:3306/jdbc_db");
+        config.setUsername("root");
+        config.setPassword("root");
+        config.setMaximumPoolSize(10);
+
+        return new HikariDataSource(config);
     }
 }
